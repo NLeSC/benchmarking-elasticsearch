@@ -1,5 +1,12 @@
+# Benchmarking Elasticsearch
+
+Code written by Eric de Kruijf for his master thesis 'Optimizing ElasticSearch
+for Texcavator'
+
+## Scripts
+
 convert_to_json.py
-	Dit Python script is afgeleid van import_kb.py en converteert de 
+	Dit Python script is afgeleid van import_kb.py en converteert de
 	XML bestanden (de output van process_kb.py) tot .json bestanden.
 	Dit script neemt drie argumenten input_dir log_dir json_dir,
 	welke vergelijkbaar zijn aan import_kb.py, behalve de json_dir.
@@ -13,16 +20,16 @@ import_json.sh
 optimizekbs.sh
 	Dit script is een voorbeeld van het aanroepen van de optimize
 	API op een bepaalde index.
-	
+
 par.sh / par_remote.sh
 	Deze scripts maken gebruik van parallel om meerdere JSON bestanden
 	tegelijkertijd de bulk API in te duwen. Let op, deze scripts zijn
 	nog niet generiek. Deze scripts maken gebruik van processOne.sh en
 	respectievelijk processOne_remote.sh
-	
+
 processOne.sh / processOne_remote.sh
 	Deze scripts worden gebruikt door par.sh en respectievelijk
-	par_remote.sh om één van de JSON bestanden uit te pakken en door
+	par_remote.sh om ï¿½ï¿½n van de JSON bestanden uit te pakken en door
 	de bulk API te laten verwerken.
 
 mapreduce1/mapred?.java
@@ -46,18 +53,18 @@ mapreduce1/mapred?.java
 						gezien en ik heb een arbitraire waarde
 						gekozen om vanaf dat punt alle redundante
 						woorden alvast te verwijderen. Deze methode is
-						uiteindelijk gebruikt voor de benchmarks. 
+						uiteindelijk gebruikt voor de benchmarks.
 		mapred6.java -> Voert een totaal andere mapreduce uit, namelijk
 						om te kijken hoeveel woorden er gemiddeld per
 						document zijn en hoeveel documenten er per query
 						matchen om inzicht te krijgen in de queries.
 	ElasticSearch-Hadoop is nodig om hier gebruik van te maken:
 	https://www.elastic.co/products/hadoop
-	Ik heb zelf alle dependencies in één jar gegooid zodat ik in Hadoop
+	Ik heb zelf alle dependencies in ï¿½ï¿½n jar gegooid zodat ik in Hadoop
 	niet de references in hoefde te stellen, maar dat is natuurlijk ook
 	mogelijk.
-	
-queries/queries.java 
+
+queries/queries.java
 	Dit bestand is gebruikt om te kijken of de Python implementatie
 	trager was dan een Java implementatie aangezien de Python implementatie
 	gebruik maakt van de REST API en Java werkelijk deelneemt aan het
@@ -70,7 +77,7 @@ queries/queries.java
 	fout in zat, maar uiteindelijk bleek de fout ergens anders te zitten en
 	heb ik de moeite niet genomen om de herschreven versie weer te
 	vereenvoudigen, het werkte immers.
-	
+
 ----
 De volgende scripts maken allemaal gebruik van de beschikbare user queries.
 Deze queries zijn voor het gemak in een sqlite database gestopt, welke
@@ -78,7 +85,7 @@ te vinden is als queries.db of enkel de queries in queries.sql. Ieder script
 haalt uit de database de query gegevens en stopt de execution times terug
 in de/een database.
 ----
-	
+
 wordcloud.hadoop.py / wordcloud.hadoop.sh
 	Dit script zorgt ervoor dat de hadoop versie van de wordcloud generation
 	wordt uitgevoerd. Er zit hierin nog een aantal dingen wat hardcoded is,
@@ -91,14 +98,8 @@ wordcloud.java.py / wordcloud.java.sh
 	Dit script zorgt ervoor dat de java versie van de wordcloud generation
 	wordt uitgevoerd. Deze krijgt wel alle gegevens van de query los en
 	bouwt vervolgens zelf een query op.
-	
+
 wordcloud.py / wordcloud.sh
 	Dit script voert de Python versie uit. Deze code is uit de Texcavator
 	source gehaald en er is ook geexperimenteerd met het gebruik van de
 	scroll methode in Python.
-	
-	
-	
-	
-	
-	
