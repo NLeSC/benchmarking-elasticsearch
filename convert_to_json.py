@@ -12,12 +12,13 @@ import errno
 import gzip
 from HTMLParser import HTMLParser
 import json
-from multiprocessing import Pool, cpu_count
 import os
 from os.path import basename, join, splitext
 import shutil
 import sys
 from tempfile import NamedTemporaryFile
+
+from joblib import Parallel, delayed
 
 
 #es = elasticsearch.Elasticsearch()
@@ -196,16 +197,6 @@ if __name__  == '__main__':
 
     #create_index(INDEX_NAME)
 
-    pool = Pool(processes=cpu_count())
-
-    pool.map(partial(process_file, json_dir=json_dir),
-             (join(input_dir, fname) for fname in os.listdir(input_dir)
-                                     if fname.endswith(".gz")))
-
-    #for filename in os.listdir(input_dir):
-        #if filename.endswith(".gz"):
-            #path = join(input_dir, filename)
-            #process_file(path, progress_dir)
-            #pool.apply_async(process_file, path)
-    pool.close()
-    pool.join()
+    par = Parallel(n_jobs=-1)
+    par(delayed(process_file)(join(input_dir, fname), json_dir=json_dir)
+        for fname in os.listdir(input_dir))
