@@ -1,53 +1,47 @@
 #!/usr/bin/env python
 
-# Import KB data into Elasticsearch. Fixed by LB, based on previous version
-# (v2). Changes (a.o.):
-# * worker count no longer hardwired
-# * unescape HTML entities in a proper way
-# * take command line arguments
-# * fix path joining
+# Import KB data into Elasticsearch.
+# Written by Tom Kenter (UvA), Ridho Reinanda (UvA), Lars Buitinck (NLeSC),
+# Eric de Kruijf (VU).
 
 from __future__ import print_function
 
 import xml.etree.cElementTree as ElementTree
-import zipfile, gzip
 from functools import partial
 import errno
-import os
-from os.path import basename, join, splitext
-import sys
-import elasticsearch
-import HTMLParser
-import datetime
-from multiprocessing import Process, Pool, cpu_count
+import gzip
 from HTMLParser import HTMLParser
 import json
+from multiprocessing import Pool, cpu_count
+import os
+from os.path import basename, join, splitext
+import shutil
+import sys
+from tempfile import NamedTemporaryFile
+
+import elasticsearch
+
 
 es = elasticsearch.Elasticsearch()
 
 INDEX_NAME = 'kb'
 
+
 def index_document(doc_obj, _id):
     es.index(INDEX_NAME,"doc",doc_obj, id=_id)
 
-def write_progress(logfile):
-    date_str = str(datetime.datetime.now())
-
-    f = open(logfile, 'w')
-    f.write(date_str)
-    f.close()
 
 unescape = HTMLParser().unescape
 
-def process_file(zipfilename, progress_dir, json_dir):
+
+def process_file(zipfilename, json_dir):
     print("Processing:", zipfilename)
 
     filename = basename(zipfilename)
-    logfile = join(progress_dir, splitext(filename)[0] + '.log')
-    jsonfilename = join(json_dir, splitext(filename)[0] + '.json.gz')
-    print("Checking progress file %s" % logfile)
-    if os.path.exists(logfile):
-        print("[%s] File already imported." % logfile)
+    final_json_path = join(json_dir, splitext(filename)[0] + '.json.gz')
+
+    if os.path.exists(final_json_path):
+        print("[%s] File already imported." % filename)
         return 1
 
     article_count = 0
@@ -57,7 +51,11 @@ def process_file(zipfilename, progress_dir, json_dir):
             txt = txt.replace('&','&amp;') # quick and dirty solution to encoding entities
             etree = ElementTree.fromstring(txt)
             docs = etree.findall('doc')
-            with gzip.GzipFile(jsonfilename, 'wb') as jsonfile:
+
+            temp_json = NamedTemporaryFile(dir=json_dir, prefix='_kbimport')
+            temp_json.close()
+
+            with gzip.GzipFile(temp_json.name, 'wb') as jsonfile:
                 for elem in docs:
                     if elem.tag == 'doc':
                         doc_el = elem
@@ -70,7 +68,7 @@ def process_file(zipfilename, progress_dir, json_dir):
                         doc_obj['paper_dcterms_isVersionOf'] = doc_el.find("field[@name='dcterms_isVersionOf']").text
                         doc_obj['paper_dc_date'] = doc_el.find("field[@name='dc_date']").text
                         doc_obj['paper_dcterms_temporal'] = doc_el.find("field[@name='dcterms_temporal']").text
-                        doc_obj['paper_dcx_recordRights'] = doc_el.find("field[@name='dcx_recordRights']").text 
+                        doc_obj['paper_dcx_recordRights'] = doc_el.find("field[@name='dcx_recordRights']").text
                         doc_obj['paper_dc_publisher'] = doc_el.find("field[@name='dc_publisher']").text
                         doc_obj['paper_dcterms_spatial'] = doc_el.find("field[@name='dcterms_spatial']").text
                         doc_obj['paper_dc_source'] = doc_el.find("field[@name='dc_source']").text
@@ -129,20 +127,23 @@ def process_file(zipfilename, progress_dir, json_dir):
 
                         article_count += 1
 
-        write_progress(logfile)
-        return (article_count)  
+            # Move within a directory is atomic, so we don't end up with
+            # partially completed files in the final output.
+            shutil.move(temp_json.name, final_json_path)
+
+        return article_count
     except Exception as error:
         print("%s in %s: %s" % (type(error), zipfilename, error))
         import traceback
         traceback.print_exc()
-        return (0)
+        return 0
 
 
 def create_index(name):
     config = {}
     config['settings'] = {
         'number_of_shards': 3,
-        'number_of_replicas': 1, 
+        'number_of_replicas': 1,
         'analysis' : {
             'analyzer':{
               'default':{
@@ -186,16 +187,13 @@ def create_index(name):
 
 if __name__  == '__main__':
     try:
-        input_dir = sys.argv[1]
-        progress_dir = sys.argv[2]
-        json_dir = sys.argv[3]
+        input_dir, json_dir = sys.argv[1:]
     except IndexError:
-        print("usage: %s input_dir log_dir json_dir" % sys.argv[0], file=sys.stderr)
-        print("    e.g., %s data/ progress/ json/" % sys.argv[0], file=sys.stderr)
+        print("usage: %s input_dir json_dir" % sys.argv[0], file=sys.stderr)
+        print("    e.g., %s data/ json/" % sys.argv[0], file=sys.stderr)
         sys.exit(1)
 
     try:
-        os.makedirs(progress_dir)
         os.makedirs(json_dir)
     except OSError as e:
         if e.errno == errno.EEXIST:
@@ -205,7 +203,7 @@ if __name__  == '__main__':
 
     pool = Pool(processes=cpu_count())
 
-    pool.map(partial(process_file, progress_dir=progress_dir, json_dir=json_dir),
+    pool.map(partial(process_file, json_dir=json_dir),
              (join(input_dir, fname) for fname in os.listdir(input_dir)
                                      if fname.endswith(".gz")))
 
