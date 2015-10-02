@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Import KB data into Elasticsearch.
+# Convert KB XML data to Elasticsearch bulk import JSON format.
 # Written by Tom Kenter (UvA), Ridho Reinanda (UvA), Lars Buitinck (NLeSC),
 # Eric de Kruijf (VU).
 
