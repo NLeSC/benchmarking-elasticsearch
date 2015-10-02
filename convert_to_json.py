@@ -54,51 +54,49 @@ def process_file(zipfilename, json_dir):
             with gzip.GzipFile(temp_json.name, 'wb') as jsonfile:
                 for elem in docs:
                     if elem.tag == 'doc':
-                        doc_el = elem
-
                         doc_obj = {}
                         # paper metadata
-                        doc_obj['paper_dc_title'] = doc_el.find("field[@name='dc_title']").text
-                        doc_obj['paper_dc_identifier'] = doc_el.find("field[@name='dc_identifier']").text
-                        doc_obj['paper_dcterms_alternative'] = doc_el.find("field[@name='dcterms_alternative']").text
-                        doc_obj['paper_dcterms_isVersionOf'] = doc_el.find("field[@name='dcterms_isVersionOf']").text
-                        doc_obj['paper_dc_date'] = doc_el.find("field[@name='dc_date']").text
-                        doc_obj['paper_dcterms_temporal'] = doc_el.find("field[@name='dcterms_temporal']").text
-                        doc_obj['paper_dcx_recordRights'] = doc_el.find("field[@name='dcx_recordRights']").text
-                        doc_obj['paper_dc_publisher'] = doc_el.find("field[@name='dc_publisher']").text
-                        doc_obj['paper_dcterms_spatial'] = doc_el.find("field[@name='dcterms_spatial']").text
-                        doc_obj['paper_dc_source'] = doc_el.find("field[@name='dc_source']").text
-                        doc_obj['paper_dcx_volume'] = doc_el.find("field[@name='dcx_volume']").text
-                        doc_obj['paper_dcx_issuenumber'] = doc_el.find("field[@name='dcx_issuenumber']").text
-                        doc_obj['paper_dcx_recordIdentifier'] = doc_el.find("field[@name='dcx_recordIdentifier']").text
-                        doc_obj['paper_dc_identifier_resolver'] = doc_el.find("field[@name='dc_identifier_resolver']").text
-                        doc_obj['paper_dc_language'] = doc_el.find("field[@name='dc_language']").text
-                        doc_obj['paper_dcterms_isPartOf'] = doc_el.find("field[@name='dcterms_isPartOf']").text
-                        doc_obj['paper_ddd_yearsDigitized'] = doc_el.find("field[@name='ddd_yearsDigitized']").text
-                        doc_obj['paper_dcterms_spatial_creation'] = doc_el.find("field[@name='dcterms_spatial_creation']").text
-                        doc_obj['paper_dcterms_issued'] = doc_el.find("field[@name='dcterms_issued']").text
+                        doc_obj['paper_dc_title'] = elem.find("field[@name='dc_title']").text
+                        doc_obj['paper_dc_identifier'] = elem.find("field[@name='dc_identifier']").text
+                        doc_obj['paper_dcterms_alternative'] = elem.find("field[@name='dcterms_alternative']").text
+                        doc_obj['paper_dcterms_isVersionOf'] = elem.find("field[@name='dcterms_isVersionOf']").text
+                        doc_obj['paper_dc_date'] = elem.find("field[@name='dc_date']").text
+                        doc_obj['paper_dcterms_temporal'] = elem.find("field[@name='dcterms_temporal']").text
+                        doc_obj['paper_dcx_recordRights'] = elem.find("field[@name='dcx_recordRights']").text
+                        doc_obj['paper_dc_publisher'] = elem.find("field[@name='dc_publisher']").text
+                        doc_obj['paper_dcterms_spatial'] = elem.find("field[@name='dcterms_spatial']").text
+                        doc_obj['paper_dc_source'] = elem.find("field[@name='dc_source']").text
+                        doc_obj['paper_dcx_volume'] = elem.find("field[@name='dcx_volume']").text
+                        doc_obj['paper_dcx_issuenumber'] = elem.find("field[@name='dcx_issuenumber']").text
+                        doc_obj['paper_dcx_recordIdentifier'] = elem.find("field[@name='dcx_recordIdentifier']").text
+                        doc_obj['paper_dc_identifier_resolver'] = elem.find("field[@name='dc_identifier_resolver']").text
+                        doc_obj['paper_dc_language'] = elem.find("field[@name='dc_language']").text
+                        doc_obj['paper_dcterms_isPartOf'] = elem.find("field[@name='dcterms_isPartOf']").text
+                        doc_obj['paper_ddd_yearsDigitized'] = elem.find("field[@name='ddd_yearsDigitized']").text
+                        doc_obj['paper_dcterms_spatial_creation'] = elem.find("field[@name='dcterms_spatial_creation']").text
+                        doc_obj['paper_dcterms_issued'] = elem.find("field[@name='dcterms_issued']").text
 
                         # article metadata
-                        doc_obj['article_dc_subject'] = doc_el.find("field[@name='dc_subject']").text
-                        doc_obj['article_dc_title'] = doc_el.findall("field[@name='dc_title']")[1].text
-                        doc_obj['article_dcterms_accessRights'] = doc_el.find("field[@name='dcterms_accessRights']").text
-                        doc_obj['article_dcx_recordIdentifier'] = doc_el.findall("field[@name='dcx_recordIdentifier']")[1].text
-                        doc_obj['article_dc_identifier_resolver'] = doc_el.findall("field[@name='dc_identifier_resolver']")[1].text
-                        doc_obj['paper_dc_language'] = doc_el.find("field[@name='dc_language']").text
-                        doc_obj['paper_dcterms_isPartOf'] = doc_el.find("field[@name='dcterms_isPartOf']").text
-                        doc_obj['paper_ddd_yearsDigitized'] = doc_el.find("field[@name='ddd_yearsDigitized']").text
-                        doc_obj['paper_dcterms_spatial_creation'] = doc_el.find("field[@name='dcterms_spatial_creation']").text
-                        doc_obj['paper_dcterms_issued'] = doc_el.find("field[@name='dcterms_issued']").text
+                        doc_obj['article_dc_subject'] = elem.find("field[@name='dc_subject']").text
+                        doc_obj['article_dc_title'] = elem.findall("field[@name='dc_title']")[1].text
+                        doc_obj['article_dcterms_accessRights'] = elem.find("field[@name='dcterms_accessRights']").text
+                        doc_obj['article_dcx_recordIdentifier'] = elem.findall("field[@name='dcx_recordIdentifier']")[1].text
+                        doc_obj['article_dc_identifier_resolver'] = elem.findall("field[@name='dc_identifier_resolver']")[1].text
+                        doc_obj['paper_dc_language'] = elem.find("field[@name='dc_language']").text
+                        doc_obj['paper_dcterms_isPartOf'] = elem.find("field[@name='dcterms_isPartOf']").text
+                        doc_obj['paper_ddd_yearsDigitized'] = elem.find("field[@name='ddd_yearsDigitized']").text
+                        doc_obj['paper_dcterms_spatial_creation'] = elem.find("field[@name='dcterms_spatial_creation']").text
+                        doc_obj['paper_dcterms_issued'] = elem.find("field[@name='dcterms_issued']").text
 
                         # article metadata
-                        doc_obj['article_dc_subject'] = doc_el.find("field[@name='dc_subject']").text
-                        doc_obj['article_dc_title'] = doc_el.findall("field[@name='dc_title']")[1].text
-                        doc_obj['article_dcterms_accessRights'] = doc_el.find("field[@name='dcterms_accessRights']").text
-                        doc_obj['article_dcx_recordIdentifier'] = doc_el.findall("field[@name='dcx_recordIdentifier']")[1].text
-                        doc_obj['article_dc_identifier_resolver'] = doc_el.findall("field[@name='dc_identifier_resolver']")[1].text
+                        doc_obj['article_dc_subject'] = elem.find("field[@name='dc_subject']").text
+                        doc_obj['article_dc_title'] = elem.findall("field[@name='dc_title']")[1].text
+                        doc_obj['article_dcterms_accessRights'] = elem.find("field[@name='dcterms_accessRights']").text
+                        doc_obj['article_dcx_recordIdentifier'] = elem.findall("field[@name='dcx_recordIdentifier']")[1].text
+                        doc_obj['article_dc_identifier_resolver'] = elem.findall("field[@name='dc_identifier_resolver']")[1].text
 
                         # text content
-                        content_el = doc_el.find("field[@name='content']")
+                        content_el = elem.find("field[@name='content']")
                         text_el = content_el.find("text") #sometimes no text_el found (invalid ocr xml)
                         if text_el is None:
                             doc_obj['text_content'] = ''
@@ -198,5 +196,6 @@ if __name__  == '__main__':
     #create_index(INDEX_NAME)
 
     par = Parallel(n_jobs=-1)
-    par(delayed(process_file)(join(input_dir, fname), json_dir=json_dir)
+    counts = par(delayed(process_file)(join(input_dir, fname), json_dir=json_dir)
         for fname in os.listdir(input_dir))
+    print("Processed %d articles" % sum(counts))
