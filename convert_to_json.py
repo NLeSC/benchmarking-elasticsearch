@@ -19,16 +19,10 @@ import shutil
 import sys
 from tempfile import NamedTemporaryFile
 
-import elasticsearch
 
-
-es = elasticsearch.Elasticsearch()
+#es = elasticsearch.Elasticsearch()
 
 INDEX_NAME = 'kb'
-
-
-def index_document(doc_obj, _id):
-    es.index(INDEX_NAME,"doc",doc_obj, id=_id)
 
 
 unescape = HTMLParser().unescape
@@ -48,11 +42,12 @@ def process_file(zipfilename, json_dir):
     try:
         with gzip.GzipFile(zipfilename) as file:
             txt = file.read('utf-8')
-            txt = txt.replace('&','&amp;') # quick and dirty solution to encoding entities
-            etree = ElementTree.fromstring(txt)
-            docs = etree.findall('doc')
+        txt = txt.replace('&','&amp;') # quick and dirty solution to encoding entities
+        etree = ElementTree.fromstring(txt)
+        del txt
+        docs = etree.findall('doc')
 
-            temp_json = NamedTemporaryFile(dir=json_dir, prefix='_kbimport')
+        with NamedTemporaryFile(dir=json_dir, prefix='_kbimport_tmp_') as temp_json:
             temp_json.close()
 
             with gzip.GzipFile(temp_json.name, 'wb') as jsonfile:
