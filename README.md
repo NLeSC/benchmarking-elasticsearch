@@ -1,7 +1,7 @@
 # Benchmarking Elasticsearch
 
-Code written by Eric de Kruijf for his master thesis 'Optimizing ElasticSearch
-for Texcavator'
+Code written by Eric de Kruijf for his master thesis '[Optimizing ElasticSearch
+for Texcavator](https://github.com/NLeSC/benchmarking-elasticsearch/blob/master/doc/Master-Thesis_Optimizing-ElasticSearch-for_Texcavator_Eric-de-Kruijf.pdf)'
 
 ## Scripts
 
@@ -68,7 +68,7 @@ van de beschikbare termvectors aangezien dit niet in queryvorm past:
 
 ElasticSearch-Hadoop is nodig om hier gebruik van te maken:
 https://www.elastic.co/products/hadoop
-Ik heb zelf alle dependencies in ùùn jar gegooid zodat ik in Hadoop
+Ik heb zelf alle dependencies in ÔøΩÔøΩn jar gegooid zodat ik in Hadoop
 niet de references in hoefde te stellen, maar dat is natuurlijk ook
 mogelijk.
 
